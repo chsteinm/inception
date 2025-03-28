@@ -1,5 +1,5 @@
 DOCKER_COMPOSE = docker-compose
-COMPOSE_FILE = docker-compose.yml
+COMPOSE_FILE = srcs/docker-compose.yml
 
 all: up
 
@@ -11,6 +11,7 @@ down:
 
 clean:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down -v --remove-orphans
+	docker system prune -f --volumes
 
 build:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) build
@@ -21,6 +22,6 @@ logs:
 ps:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) ps
 
-re: clean up
+re: clean build up
 
 .PHONY: all clean re up down build logs ps

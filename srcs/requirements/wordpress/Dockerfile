@@ -5,9 +5,10 @@ RUN apt-get update && apt-get install -y php-fpm php-mysql curl unzip \
     && curl -O https://wordpress.org/latest.tar.gz \
     && tar -xzvf latest.tar.gz \
     && rm latest.tar.gz \
-    && mv wordpress /var/www/html \
-    && chown -R www-data:www-data /var/www/html
+    && mkdir -p /var/www/html && mv wordpress /var/www/html \
+    && chown -R www-data:www-data /var/www/html \
+    && mkdir -p /run/php && chown www-data:www-data /run/php
 
 EXPOSE 9000
 
-CMD ["php-fpm", "--nodaemonize"]
+CMD ["php-fpm7.4", "--nodaemonize"]
