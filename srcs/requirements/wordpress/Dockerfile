@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     && mkdir -p /run/php && chown www-data:www-data /run/php
 
 WORKDIR /var/www/html
+
 RUN wget https://wordpress.org/latest.tar.gz \
     && tar -xzvf latest.tar.gz --strip-components=1 \
     && rm latest.tar.gz \

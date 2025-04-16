@@ -8,6 +8,9 @@ services:
     volumes:
       - ./requirements/nginx/nginx.conf:/etc/nginx/nginx.conf
       - wordpress_data:/var/www/html
+    depends_on:
+      - mariadb
+      - wordpress
     networks:
       - network
     restart: no

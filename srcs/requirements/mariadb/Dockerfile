@@ -8,4 +8,4 @@ COPY my.cnf /etc/mysql/my.cnf
 
 EXPOSE 3306
 
-CMD ["mysqld"]
+CMD ["mysqld", "--bind-address=0.0.0.0"]
