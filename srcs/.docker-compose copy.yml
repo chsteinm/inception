@@ -16,9 +16,9 @@ services:
 
   wordpress:
     container_name: wordpress
-    # depends_on:
-    #   mariadb
-    #     # condition: service_healthy
+    depends_on:
+      mariadb:
+        condition: service_healthy
     build: ./requirements/wordpress
     env_file:
       - .env
@@ -42,12 +42,12 @@ services:
       - mariadb_data:/var/lib/mysql
     networks:
       - network
-    # healthcheck:
-    #   test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
-    restart: on-failure
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: no
 
 volumes:
   wordpress_data:

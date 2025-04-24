@@ -1,18 +1,21 @@
-FROM debian:bullseye-slim
+FROM debian:bullseye
 
 RUN apt-get update && apt-get install -y \
-    php7.4 php7.4-fpm php7.4-mysql curl wget tar unzip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /run/php && chown www-data:www-data /run/php
+wget \
+tar \
+php \
+php-fpm \
+php-mysql \
+&& rm -rf /var/lib/apt/lists/*
 
-WORKDIR /var/www/html
+RUN mkdir -p /var/www/html \
+&& wget https://wordpress.org/latest.tar.gz \
+&& tar -xzf latest.tar.gz --strip-components=1 -C /var/www/html \
+&& rm latest.tar.gz
 
-RUN wget https://wordpress.org/latest.tar.gz \
-    && tar -xzvf latest.tar.gz --strip-components=1 \
-    && rm latest.tar.gz \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+COPY ./tools/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-EXPOSE 9000
+ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["php-fpm7.4", "--nodaemonize"]
+# WORKDIR /var/www/html
