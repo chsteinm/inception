@@ -24,4 +24,11 @@ ps:
 
 re: clean build up
 
-.PHONY: all clean re up down build logs ps
+megaClean:
+	docker stop $$(docker ps -qa);
+	docker rm $$(docker ps -qa);
+	docker rmi -f $$(docker images -qa);
+	docker volume rm -f $$(docker volume ls -q);
+	docker network rm -f $$(docker network ls -q) 2>/dev/null
+
+.PHONY: all clean re up down build logs ps megaClean
