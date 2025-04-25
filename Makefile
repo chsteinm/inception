@@ -12,6 +12,8 @@ down:
 clean:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down -v --remove-orphans
 	docker system prune -f --volumes
+	sudo rm -rf /home/chrstein/data/wordpress/*
+	sudo rm -rf /home/chrstein/data/mysql/*
 
 build:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) build

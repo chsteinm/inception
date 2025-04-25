@@ -1,5 +1,7 @@
 FROM debian:bullseye
 
+RUN mkdir -p /run/php && chown -R www-data:www-data /run/php
+
 RUN apt-get update && apt-get install -y \
 wget \
 tar \
@@ -13,6 +15,8 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
+COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+
 RUN mkdir -p /var/www/html \
 && wget https://wordpress.org/latest.tar.gz \
 && tar -xzf latest.tar.gz --strip-components=1 -C /var/www/html \
@@ -22,5 +26,3 @@ COPY ./tools/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-
-# WORKDIR /var/www/html

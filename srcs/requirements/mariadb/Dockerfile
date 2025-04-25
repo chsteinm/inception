@@ -13,20 +13,9 @@ RUN apt-get update -y && \
 
 RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
 
-
 COPY ./tools/init-db.sh /init-db.sh
 RUN chmod +x /init-db.sh
 
-# RUN service mariadb start \
-#     && mariadb -u root \
-#     -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};" \
-#     -e "CREATE USER IF NOT EXISTS '${MYSQL_ADMIN_USER}' IDENTIFIED BY '${MYSQL_ADMIN_PASSWORD}';" \
-#     -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}';" \
-#     -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';" \
-#     -e "FLUSH PRIVILEGES;"
+COPY ./conf/my.cnf /etc/mysql/my.cnf
 
-#RUN sed -i 's/^bind-address\s*=.*$/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
-
-# ENTRYPOINT [ "bash"]
-# ENTRYPOINT [ "mariadbd", "--bind-address=0.0.0.0"]
-CMD ["/bin/bash", "-c", "/init-db.sh && exec mysqld_safe"]
+CMD ["/bin/bash", "-c", "/init-db.sh"]

@@ -4,17 +4,23 @@ mkdir -p /var/www/html
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 
-WP_CLI="/usr/local/bin/wp"
 WP_PATH="/var/www/html"
-
-until ${WP_CLI} db check --path=${WP_PATH} --allow-root; do
-    echo "En attente de MariaDB..."
-    sleep 5
-done
 
 if [ -z "$(ls -A /var/www/html)" ]; then
     echo "Téléchargement de WordPress..."
     wp core download --path=${WP_PATH} --allow-root
+fi
+
+cd /var/www/html
+if [ ! -f "${WP_PATH}/wp-config.php" ]; then
+    echo "Création du fichier wp-config.php..."
+    wp config create \
+        --dbname="${MYSQL_DATABASE}" \
+        --dbuser="${MYSQL_USER}" \
+        --dbpass="${MYSQL_PASSWORD}" \
+        --dbhost="mariadb" \
+        --path=${WP_PATH} \
+        --allow-root
 fi
 
 if ! wp core is-installed --allow-root; then
