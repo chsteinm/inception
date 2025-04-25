@@ -26,11 +26,11 @@ ps:
 
 re: clean build up
 
-megaClean:
-	docker stop $$(docker ps -qa);
-	docker rm $$(docker ps -qa);
-	docker rmi -f $$(docker images -qa);
-	docker volume rm -f $$(docker volume ls -q);
-	docker network rm -f $$(docker network ls -q) 2>/dev/null
+megaClean: clean
+	docker stop $$(docker ps -qa) || true;
+	docker rm $$(docker ps -qa) || true;
+	docker rmi -f $$(docker images -qa) || true;
+	docker volume rm -f $$(docker volume ls -q) || true;
+	docker network rm -f $$(docker network ls -q | grep -v 'bridge\|host\|none') 2>/dev/null || true;
 
 .PHONY: all clean re up down build logs ps megaClean
