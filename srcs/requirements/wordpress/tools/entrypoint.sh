@@ -11,35 +11,35 @@ if [ -z "$(ls -A /var/www/html)" ]; then
     wp core download --path=${WP_PATH} --allow-root
 fi
 
-cd /var/www/html
+cd ${WP_PATH}
 if [ ! -f "${WP_PATH}/wp-config.php" ]; then
     echo "Création du fichier wp-config.php..."
     wp config create \
-        --dbname="${MYSQL_DATABASE}" \
-        --dbuser="${MYSQL_USER}" \
-        --dbpass="${MYSQL_PASSWORD}" \
+        --allow-root \
+        --dbname="${MARIADB_DATABASE}" \
+        --dbuser="${MARIADB_USER}" \
+        --dbpass="${MARIADB_PASSWORD}" \
         --dbhost="mariadb" \
-        --path=${WP_PATH} \
-        --allow-root
+        --path=${WP_PATH}
 fi
 
 if ! wp core is-installed --allow-root; then
     echo "Installation de WordPress..."
     wp core install \
+        --allow-root --skip-plugins --skip-themes \
         --url="https://chrstein.42.fr" \
         --title="inception" \
-        --admin_user="${MYSQL_ADMIN_USER}" \
-        --admin_password="${MYSQL_ADMIN_PASSWORD}" \
+        --admin_user="${WP_ADMIN_USER}" \
+        --admin_password="${WP_ADMIN_PASSWORD}" \
         --admin_email="admin@chrstein.42.fr" \
-    	--path=${WP_PATH} \
-        --allow-root 
+    	--path=${WP_PATH} 
 fi
 
-if ! wp user get "${MYSQL_USER}" --allow-root; then
-    echo "Création de l’utilisateur ${MYSQL_USER}..."
-    wp user create "${MYSQL_USER}" "user@chrstein.42.fr" \
+if ! wp user get "${WP_USER}" --allow-root 2>/dev/null; then
+    echo "Création de l’utilisateur ${WP_USER}..."
+    wp user create "${WP_USER}" "user@chrstein.42.fr" \
         --role=subscriber \
-        --user_pass="${MYSQL_PASSWORD}" \
+        --user_pass="${WP_USER_PASSWORD}" \
     	--path=${WP_PATH} \
         --allow-root
 fi

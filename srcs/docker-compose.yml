@@ -29,20 +29,15 @@ services:
 
   mariadb:
     build: ./requirements/mariadb
-    environment:
-    - MYSQL_DATABASE=${MYSQL_DATABASE}
-    - MYSQL_ADMIN_USER=${MYSQL_ADMIN_USER}
-    - MYSQL_ADMIN_PASSWORD=${MYSQL_ADMIN_PASSWORD}
-    - MYSQL_USER=${MYSQL_USER}
-    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    env_file:
+      - .env
     container_name: mariadb
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
       - network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ADMIN_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${WP_ADMIN_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 5
