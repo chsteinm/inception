@@ -1,5 +1,6 @@
 FROM debian:bullseye
 
+# Update package lists, install Nginx and OpenSSL, and clean up to reduce image size
 RUN apt-get update && apt-get install -y nginx openssl \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /etc/nginx/ssl \
@@ -10,10 +11,12 @@ RUN apt-get update && apt-get install -y nginx openssl \
     && chown www-data:www-data /etc/nginx/ssl/nginx.* \
     && chmod 600 /etc/nginx/ssl/nginx.key \
     && chmod 644 /etc/nginx/ssl/nginx.crt
-    
 
-COPY ./tools/nginx.conf /etc/nginx/nginx.conf
+# Copy the custom Nginx configuration file into the container
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
+# Expose port 443 for HTTPS traffic
 EXPOSE 443
 
+# Start Nginx in the foreground to keep the container running
 CMD ["nginx", "-g", "daemon off;"]
