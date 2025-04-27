@@ -12,6 +12,8 @@ down:
 clean:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down -v --remove-orphans
 	docker system prune -f --volumes
+	sudo rm -rf /home/chrstein/data/wordpress/*
+	sudo rm -rf /home/chrstein/data/mysql/*
 
 build:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) build
@@ -36,13 +38,13 @@ check-pid:
 
 re: clean build up
 
-fclean: clean
-	sudo rm -rf /home/chrstein/data/wordpress/*
-	sudo rm -rf /home/chrstein/data/mysql/*
+fclean:
 	docker stop $$(docker ps -qa) || true;
 	docker rm $$(docker ps -qa) || true;
 	docker rmi -f $$(docker images -qa) || true;
 	docker volume rm -f $$(docker volume ls -q) || true;
 	docker network rm -f $$(docker network ls -q | grep -v 'bridge\|host\|none') 2>/dev/null || true;
+	sudo rm -rf /home/chrstein/data/wordpress/*
+	sudo rm -rf /home/chrstein/data/mysql/*
 
 .PHONY: all clean re up down build logs ps fclean check-pid
