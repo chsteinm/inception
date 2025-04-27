@@ -5,7 +5,7 @@ all: up
 
 env:
 	@if [ ! -f srcs/.env ]; then \
-		echo "Creating .env file in srcs/"; \
+		echo "Creating .env file:"; \
 		read -p "Enter MARIADB_DATABASE (default: wordpress): " mariadb_database; \
 		read -p "Enter MARIADB_ROOT_PASSWORD (default: password): " mariadb_root_password; \
 		read -p "Enter MARIADB_USER (default: db_user): " mariadb_user; \
