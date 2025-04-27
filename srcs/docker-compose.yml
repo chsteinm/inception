@@ -6,7 +6,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - /home/chrstein/data/wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     depends_on:
       - wordpress
     networks:
@@ -22,7 +22,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /home/chrstein/data/wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - network
     restart: on-failure
@@ -33,7 +33,7 @@ services:
       - .env
     container_name: mariadb
     volumes:
-      - /home/chrstein/data/wordpress:/var/www/html
+      - mariadb_data:/var/lib/mysql
     networks:
       - network
     healthcheck:
@@ -42,6 +42,20 @@ services:
       timeout: 5s
       retries: 5
     restart: on-failure
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/chrstein/data/wordpress
+      o: bind
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/chrstein/data/mysql
+      o: bind
 
 networks:
   network:
