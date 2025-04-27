@@ -15,7 +15,6 @@ env:
 		echo "WP_USER=user" >> srcs/.env; \
 		echo "WP_USER_PASSWORD=password" >> srcs/.env; \
 		echo ".env file created successfully."; \
-		else \
 	fi
 
 up: env
