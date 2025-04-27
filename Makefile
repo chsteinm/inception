@@ -3,7 +3,21 @@ COMPOSE_FILE = srcs/docker-compose.yml
 
 all: up
 
-up:
+env:
+    @if [ ! -f srcs/.env ]; then \
+        echo "Creating default .env file in srcs/"; \
+        echo "MARIADB_DATABASE=wordpress" > srcs/.env; \
+        echo "MARIADB_ROOT_PASSWORD=password" >> srcs/.env; \
+        echo "MARIADB_USER=db_user" >> srcs/.env; \
+        echo "MARIADB_PASSWORD=password" >> srcs/.env; \
+        echo "WP_ADMIN_USER=eval" >> srcs/.env; \
+        echo "WP_ADMIN_PASSWORD=password" >> srcs/.env; \
+        echo "WP_USER=user" >> srcs/.env; \
+    	echo "WP_USER_PASSWORD=password" >> srcs/.env; \
+        echo ".env file created successfully."; \
+    fi
+
+up: env
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d
 
 down:
