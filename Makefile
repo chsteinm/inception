@@ -5,15 +5,23 @@ all: up
 
 env:
 	@if [ ! -f srcs/.env ]; then \
-		echo "Creating default .env file in srcs/"; \
-		echo "MARIADB_DATABASE=wordpress" > srcs/.env; \
-		echo "MARIADB_ROOT_PASSWORD=password" >> srcs/.env; \
-		echo "MARIADB_USER=db_user" >> srcs/.env; \
-		echo "MARIADB_PASSWORD=password" >> srcs/.env; \
-		echo "WP_ADMIN_USER=eval" >> srcs/.env; \
-		echo "WP_ADMIN_PASSWORD=password" >> srcs/.env; \
-		echo "WP_USER=user" >> srcs/.env; \
-		echo "WP_USER_PASSWORD=password" >> srcs/.env; \
+		echo "Creating .env file in srcs/"; \
+		read -p "Enter MARIADB_DATABASE (default: wordpress): " mariadb_database; \
+		read -p "Enter MARIADB_ROOT_PASSWORD (default: password): " mariadb_root_password; \
+		read -p "Enter MARIADB_USER (default: db_user): " mariadb_user; \
+		read -p "Enter MARIADB_PASSWORD (default: password): " mariadb_password; \
+		read -p "Enter WP_ADMIN_USER (default: eval): " wp_admin_user; \
+		read -p "Enter WP_ADMIN_PASSWORD (default: password): " wp_admin_password; \
+		read -p "Enter WP_USER (default: user): " wp_user; \
+		read -p "Enter WP_USER_PASSWORD (default: password): " wp_user_password; \
+		echo "MARIADB_DATABASE=$${mariadb_database:-wordpress}" > srcs/.env; \
+		echo "MARIADB_ROOT_PASSWORD=$${mariadb_root_password:-password}" >> srcs/.env; \
+		echo "MARIADB_USER=$${mariadb_user:-db_user}" >> srcs/.env; \
+		echo "MARIADB_PASSWORD=$${mariadb_password:-password}" >> srcs/.env; \
+		echo "WP_ADMIN_USER=$${wp_admin_user:-eval}" >> srcs/.env; \
+		echo "WP_ADMIN_PASSWORD=$${wp_admin_password:-password}" >> srcs/.env; \
+		echo "WP_USER=$${wp_user:-user}" >> srcs/.env; \
+		echo "WP_USER_PASSWORD=$${wp_user_password:-password}" >> srcs/.env; \
 		echo ".env file created successfully."; \
 	fi
 
@@ -52,13 +60,11 @@ check-pid:
 
 re: clean build up
 
-fclean:
-	docker stop $$(docker ps -qa) || true;
-	docker rm $$(docker ps -qa) || true;
-	docker rmi -f $$(docker images -qa) || true;
-	docker volume rm -f $$(docker volume ls -q) || true;
+fclean: clean
+	docker stop $$(docker ps -qa) 2>/dev/null || true;
+	docker rm $$(docker ps -qa) 2>/dev/null || true;
+	docker rmi -f $$(docker images -qa) 2>/dev/null || true;
+	docker volume rm -f $$(docker volume ls -q) 2>/dev/null || true;
 	docker network rm -f $$(docker network ls -q | grep -v 'bridge\|host\|none') 2>/dev/null || true;
-	sudo rm -rf /home/chrstein/data/wordpress/*
-	sudo rm -rf /home/chrstein/data/mysql/*
 
-.PHONY: all clean re up down build logs ps fclean check-pid
+.PHONY: all clean re up down build logs ps fclean check-pid env
